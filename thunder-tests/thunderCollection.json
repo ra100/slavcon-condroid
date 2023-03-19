@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
+    "colName": "SlavCon",
+    "created": "2023-03-19T13:51:31.859Z",
+    "sortNum": 10000,
+    "folders": []
+  },
+  {
+    "_id": "d0c6773d-9b68-435e-916c-f925a28b6101",
+    "colName": "Condroid",
+    "created": "2023-03-19T14:42:56.999Z",
+    "sortNum": 20000,
+    "folders": []
+  }
+]

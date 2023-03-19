@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "8fcbab62-66bb-4242-b084-c638daa10679",
+    "name": "default",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2023-03-19T13:51:54.792Z",
+    "modified": "2023-03-19T13:51:54.792Z",
+    "data": [
+      {
+        "name": "year",
+        "value": "2021"
+      },
+      {
+        "name": "baseUrl",
+        "value": "https://slavcon.sk"
+      },
+      {
+        "name": "yearTid",
+        "value": "138"
+      }
+    ]
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "_id": "a3b0bf6f-17c9-434a-bc22-19f8687685af",
+    "colId": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
+    "containerId": "",
+    "name": "program",
+    "url": "{{baseUrl}}/sk/jsonapi/views/program/program_page?views-argument[0]=2021",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-03-19T13:51:41.467Z",
+    "modified": "2023-03-19T14:51:02.281Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "views-argument[0]",
+        "value": "2021",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "216a1e89-d8b9-40c0-b9ca-0e64143f66b7",
+    "colId": "d0c6773d-9b68-435e-916c-f925a28b6101",
+    "containerId": "",
+    "name": "get XML",
+    "url": "http://localhost:3000/slavcon/{{year}}",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-03-19T14:43:10.174Z",
+    "modified": "2023-03-19T14:43:32.954Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ea8c9c2b-0d39-419f-a470-baad6b075ecc",
+    "colId": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
+    "containerId": "",
+    "name": "guests",
+    "url": "{{baseUrl}}/sk/jsonapi/views/users/guests_page?views-argument[0]={{year}}",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-03-19T14:50:16.931Z",
+    "modified": "2023-03-19T14:51:06.412Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "views-argument[0]",
+        "value": "{{year}}",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "86cab960-5158-466b-8b58-92ac7dddfb15",
+    "colId": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
+    "containerId": "",
+    "name": "rooms",
+    "url": "{{baseUrl}}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]={{yearTid}}",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2023-03-19T15:10:54.230Z",
+    "modified": "2023-03-19T15:20:13.059Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "filter[field_rocnik.meta.drupal_internal__target_id]",
+        "value": "{{yearTid}}",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "ba1ae6a3-c496-4460-b3ab-7a414e0d1f5a",
+    "colId": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
+    "containerId": "",
+    "name": "years",
+    "url": "{{baseUrl}}/sk/jsonapi/taxonomy_term/rocnik?filter[name]={{year}}",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2023-03-19T15:12:50.004Z",
+    "modified": "2023-03-19T15:20:01.713Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "filter[name]",
+        "value": "{{year}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data[0].attributes.drupal_internal__tid",
+        "action": "setto",
+        "value": "{{yearTid}}"
+      }
+    ]
+  },
+  {
+    "_id": "0b881d89-fbd6-48a2-a0b1-7aad512664c0",
+    "colId": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
+    "containerId": "",
+    "name": "categories",
+    "url": "{{baseUrl}}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]={{yearTid}}",
+    "method": "GET",
+    "sortNum": 35000,
+    "created": "2023-03-19T15:25:18.663Z",
+    "modified": "2023-03-19T15:25:31.256Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "filter[field_rocnik.meta.drupal_internal__target_id]",
+        "value": "{{yearTid}}",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  }
+]
