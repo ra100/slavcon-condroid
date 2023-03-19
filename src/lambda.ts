@@ -1,10 +1,10 @@
-import awsLambdaFastify, { PromiseHandler } from '@fastify/aws-lambda'
+import awsLambdaFastify from '@fastify/aws-lambda'
 import { app } from './app'
 import fastify from 'fastify'
 
-export const handler: PromiseHandler<any, any> = async (event, context) => {
-  const fastifyInstance = fastify()
-  await app(fastifyInstance, {})
+const server = fastify({
+  logger: true
+})
+server.register(app)
 
-  return awsLambdaFastify(fastifyInstance)(event, context)
-}
+export const handler = awsLambdaFastify(server)

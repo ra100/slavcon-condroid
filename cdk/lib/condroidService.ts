@@ -8,7 +8,7 @@ import { Duration } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 
 export const getStatusLambda = (scope: Construct): NodejsFunction =>
-  new NodejsFunction(scope, 'CreditsStatusHandler', {
+  new NodejsFunction(scope, 'SLavconCondroidHandler', {
     entry: path.resolve(__dirname, '../..', 'src/lambda.ts'),
     handler: 'handler',
     runtime: Runtime.NODEJS_18_X,

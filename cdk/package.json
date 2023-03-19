@@ -9,6 +9,7 @@
   "scripts": {
     "cdk:bootstrap": "cdk bootstrap",
     "cdk:deploy": "cdk deploy",
+    "cdk:template": "npx cdk synth --no-staging > template.yaml",
     "sam": "sam local start-api"
   },
   "keywords": [],
