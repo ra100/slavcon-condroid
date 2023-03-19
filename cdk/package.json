@@ -1,0 +1,25 @@
+{
+  "name": "slavcon-condroid-cdk",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with Fastify-CLI.",
+  "main": "app.ts",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "cdk:bootstrap": "cdk bootstrap",
+    "cdk:deploy": "cdk deploy",
+    "sam": "sam local start-api"
+  },
+  "keywords": [],
+  "author": "ra100",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-cdk": "^2.69.0",
+    "aws-cdk-lib": "^2.69.0",
+    "constructs": "^10.1.282",
+    "@types/node": "^18.15.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  }
+}

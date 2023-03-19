@@ -12,13 +12,17 @@
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"
+    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js",
+    "cdk:bootstrap": "cdk bootstrap",
+    "cdk:deploy": "cdk deploy",
+    "sam": "sam local start-api"
   },
   "keywords": [],
   "author": "ra100",
   "license": "ISC",
   "dependencies": {
     "@fastify/autoload": "^5.7.1",
+    "@fastify/aws-lambda": "^3.2.0",
     "@fastify/sensible": "^5.2.0",
     "fastify": "^4.14.1",
     "fastify-cli": "^5.7.1",
