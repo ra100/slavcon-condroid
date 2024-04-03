@@ -20,3 +20,11 @@ Run the test cases.
 ## Learn More
 
 To learn Fastify, check out the [Fastify documentation](https://www.fastify.io/docs/latest/).
+
+## Deploy
+
+```shell
+cd cdk
+npm run cdk:bootstrap
+npm run cdk:deploy
+```

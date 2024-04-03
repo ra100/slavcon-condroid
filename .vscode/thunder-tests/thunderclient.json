@@ -4,16 +4,16 @@
     "colId": "4aea82fe-e2ff-41e0-8ce7-9e5a8418483b",
     "containerId": "",
     "name": "program",
-    "url": "{{baseUrl}}/sk/jsonapi/views/program/program_page?views-argument[0]=2021",
+    "url": "{{baseUrl}}/sk/jsonapi/views/program/program_page?views-argument[0]=2023",
     "method": "GET",
     "sortNum": 10000,
     "created": "2023-03-19T13:51:41.467Z",
-    "modified": "2023-03-19T14:51:02.281Z",
+    "modified": "2023-04-03T18:49:23.859Z",
     "headers": [],
     "params": [
       {
         "name": "views-argument[0]",
-        "value": "2021",
+        "value": "2023",
         "isPath": false
       }
     ],

@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
-import { getCondroidFormat } from './loadProgram'
+import { getCondroidFormat } from './condroid'
 
-const slavcon: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const condroid: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.get<{ Params: { year: string } }>('/slavcon/:year', async function (request, reply) {
     const program = await getCondroidFormat(parseInt(request.params.year, 10))
 
@@ -11,4 +11,4 @@ const slavcon: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   })
 }
 
-export default slavcon
+export default condroid

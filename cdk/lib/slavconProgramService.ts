@@ -8,7 +8,7 @@ import { Duration } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 
 export const getStatusLambda = (scope: Construct): NodejsFunction =>
-  new NodejsFunction(scope, 'SLavconCondroidHandler', {
+  new NodejsFunction(scope, 'SlavconProgramHandler', {
     entry: path.resolve(__dirname, '../..', 'src/lambda.ts'),
     handler: 'handler',
     runtime: Runtime.NODEJS_18_X,
@@ -18,9 +18,9 @@ export const getStatusLambda = (scope: Construct): NodejsFunction =>
   })
 
 export const getApiGateway = (scope: Construct, lambda: NodejsFunction): RestApi => {
-  const api = new RestApi(scope, 'slavcon-condroid-api', {
-    restApiName: 'Slavcon Condroid Service',
-    description: 'This service converts SlavCon JSON to Condroid XML.'
+  const api = new RestApi(scope, 'slavcon-prorgam-api', {
+    restApiName: 'Slavcon Program Service',
+    description: 'This service converts SlavCon JSON to Condroid XML or other formats.'
   })
 
   const scheduleLambda = new LambdaIntegration(lambda, {
@@ -29,7 +29,7 @@ export const getApiGateway = (scope: Construct, lambda: NodejsFunction): RestApi
 
   api.root.addProxy({ defaultIntegration: scheduleLambda })
 
-  api.addUsagePlan('slavcon-condroid-usage-plan', {
+  api.addUsagePlan('slavcon-program-usage-plan', {
     quota: { limit: 240, period: Period.DAY },
     throttle: { rateLimit: 1, burstLimit: 5 }
   })
@@ -37,7 +37,7 @@ export const getApiGateway = (scope: Construct, lambda: NodejsFunction): RestApi
   return api
 }
 
-export class CondroidService extends Construct {
+export class SlavconProgramService extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id)
 
