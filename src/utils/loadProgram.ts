@@ -19,11 +19,13 @@ export interface RawGuest {
 export interface RawRoom {
   tid: number
   name: string
+  description: string
 }
 
 export interface RawLine {
   tid: number
   name: string
+  color: string
 }
 
 export enum SlavconProgramType {
@@ -48,6 +50,7 @@ export interface RawProgram {
   annotation: string
   highlight: boolean
   changed: string
+  summary: string
 }
 
 export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
@@ -72,11 +75,11 @@ export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
     `${baseUrl}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
   )
   const data = (await response.json()) as unknown as RoomResponse
-  console.error(data)
 
   return data.data.map(({ attributes }) => ({
     tid: attributes.drupal_internal__tid,
-    name: attributes.name
+    name: attributes.name,
+    description: attributes.description?.processed || ''
   }))
 }
 
@@ -89,7 +92,8 @@ export const loadLines = async (yearTid: number): Promise<RawLine[]> => {
 
   return data.data.map(({ attributes }) => ({
     tid: attributes.drupal_internal__tid,
-    name: attributes.name
+    name: attributes.name,
+    color: attributes.field_color?.color
   }))
 }
 
@@ -109,7 +113,12 @@ const mapToRawProgram = ({ attributes, relationships }: ScheduleNode): RawProgra
   programLines: relationships.field_category.data?.map(getInternalIds),
   location: relationships.field_miestnost.data?.meta.drupal_internal__target_id,
   highlight: attributes.field_highlight,
-  changed: new Date(attributes.changed).toISOString()
+  changed: new Date(attributes.changed).toISOString(),
+  summary:
+    attributes.body.summary !== ''
+      ? attributes.body.summary
+      : attributes.metatag.find(({ attributes }) => attributes.name === 'description')?.attributes.content ??
+        attributes.body.processed
 })
 
 export const loadSchedule = async (year: number): Promise<RawProgram[]> => {

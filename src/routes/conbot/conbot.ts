@@ -1,3 +1,4 @@
+import { feedbackForm, floorPlan, slavconData } from '../../slavconData'
 import {
   loadAuthors,
   loadLines,
@@ -13,16 +14,18 @@ import {
 } from '../../utils/loadProgram'
 
 interface ConbotProgram {
+  annotation: string
+  color: string
+  endTime: string
+  highlight: boolean
+  location: string
   pid: number
-  speaker: string
+  programLine: string
+  speaker?: string
+  startTime: string
+  summary: string
   title: string
   type: string
-  programLine: string
-  location: string
-  startTime: string
-  endTime: string
-  annotation: string
-  highlight: boolean
 }
 
 const mapProgramTypeToText = (programType: SlavconProgramType[]): ConbotProgram['type'] =>
@@ -48,29 +51,53 @@ const mapScheduleToConbotProgram =
     title: data.title,
     type: mapProgramTypeToText(data.type),
     programLine: data.programLines.map((line) => lines.get(line)?.name).join(', ') || 'UNDEFINED',
-    location: rooms.get(data.location)?.name || 'UNDEFINED',
+    location:
+      typeof rooms.get(data.location)?.name === 'undefined'
+        ? 'UNDEFINED'
+        : `${rooms.get(data.location)?.name} (${rooms.get(data.location)?.description})`,
     startTime: data.startTime,
     endTime: data.endTime,
     annotation: data.annotation,
-    speaker: data.authors?.map((author: number) => authors.get(author)?.name).join(', ') || 'UNDEFINED',
-    highlight: data.highlight ?? false
+    summary: data.summary,
+    speaker: data.authors?.map((author: number) => authors.get(author)?.name).join(', '),
+    highlight: data.highlight ?? false,
+    color: data.programLines.map((line) => lines.get(line)?.color).at(0) || 'transparent'
   })
 
-const programToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}">
+const programToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" color="${p.color}">
       <pid><![CDATA[ ${p.pid} ]]></pid>
       <speaker><![CDATA[ ${p.speaker} ]]></speaker>
       <title><![CDATA[ ${p.title} ]]></title>
       <type><![CDATA[ ${p.type} ]]></type>
-      <programLine><![CDATA[ ${p.programLine} ]]></programLine>
-      <location><![CDATA[ ${p.location} ]]></location>
-      <startTime>${p.startTime}</startTime>
-      <endTime>${p.endTime}</endTime>
+      <program-line><![CDATA[ ${p.location} ]]></program-line>
+      <location><![CDATA[ ${p.programLine} ]]></location>
+      <start-time>${p.startTime}</start-time>
+      <end-time>${p.endTime}</end-time>
       <annotation><![CDATA[ ${p.annotation} ]]></annotation>
     </programme>`
 
-const floorPlan = [
-  { title: 'budova', description: '', image: 'https://slavcon.sk/sites/default/files/uploads/2023/mapka4.svg' }
-]
+const extraProgramToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" color="${p.color}">
+      <id><![CDATA[ ${p.pid} ]]></id>
+      <title><![CDATA[ ${p.title} ]]></title>
+      ${p.speaker ? `<enterpreneur><![CDATA[ ${p.speaker} ]]></enterpreneur>` : ''}
+      <annotation><![CDATA[ ${p.annotation} ]]></annotation>
+      <description><![CDATA[ ${p.summary}<br/>${p.location !== 'UNDEFINED' ? `<strong>${p.location}</strong>, ` : ''}${
+  p.type
+}, ${p.programLine}<br/> ]]></description>
+    </programme>`
+
+const feedbackXML = () => {
+  if (!feedbackForm.enabled) {
+    return ''
+  }
+
+  return `  <dotaznik-spokojenosti>
+    <title><![CDATA[ ${feedbackForm.title} ]]></title>
+    <annotation><![CDATA[ ${feedbackForm.description} ]]></annotation>
+    <image><![CDATA[ ${feedbackForm.image} ]]></image>
+    <link><![CDATA[ ${feedbackForm.link} ]]></link>
+  </dotaznik-spokojenosti>`
+}
 
 const convertToXML = (program: ConbotProgram[], extraProgram: ConbotProgram[], lastUpdate: string) => {
   return `<event last-update="${lastUpdate}">
@@ -78,7 +105,7 @@ const convertToXML = (program: ConbotProgram[], extraProgram: ConbotProgram[], l
   ${program.map(programToXML).join('\n')}
    </annotations>
    <extra-program>
-   ${extraProgram.map(programToXML).join('\n')}
+   ${extraProgram.map(extraProgramToXML).join('\n')}
    </extra-program>
    <planek>
    ${floorPlan
@@ -91,6 +118,13 @@ const convertToXML = (program: ConbotProgram[], extraProgram: ConbotProgram[], l
      )
      .join('\n')}
    </planek>
+   <event-info>
+      <title><![CDATA[ ${slavconData.title} ]]></title>
+      <description><![CDATA[ ${slavconData.description} ]]></description>
+      <web-url><![CDATA[ ${slavconData.webUrl} ]]></web-url>
+      <fb-url><![CDATA[ ${slavconData.fbUrl} ]]></fb-url>
+   </event-info>
+   ${feedbackXML()}
 </event>`
 }
 
@@ -121,7 +155,9 @@ export const getConbotFormat = async (year: number) => {
     schedule[0].changed
   )
 
-  const mappedProgram = schedule.map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
+  const mappedProgram = schedule
+    .map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
+    .filter(({ location }) => location !== 'UNDEFINED')
   const mappedProgramExtra = scheduleExtra.map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
 
   return convertToXML(mappedProgram, mappedProgramExtra, lastUpdate)

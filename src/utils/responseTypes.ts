@@ -51,6 +51,7 @@ export interface ScheduleAttributes {
   field_split: null
   field_start: DateString
   field_tech: null | string
+  metatag: { attributes: { content: string; name: string }; tag: string }[]
 }
 
 export interface Body {
@@ -177,7 +178,7 @@ export interface GuestAttributes {
   content_translation_outdated: boolean
   content_translation_status: boolean
   content_translation_created: Date | null
-  field_bio: FieldBio | null
+  field_bio: FieldFullText | null
   field_displayname: string
   field_funkcia: null | string
   field_guest_category: any[]
@@ -190,7 +191,7 @@ export interface GuestAttributes {
   field_typ_hosta: string
 }
 
-interface FieldBio {
+interface FieldFullText {
   value: string
   format: string
   processed: string
@@ -218,6 +219,7 @@ interface RoomData {
 interface RoomAttributes {
   drupal_internal__tid: number
   name: string
+  description: FieldFullText
 }
 
 interface LineData {
@@ -230,4 +232,8 @@ interface LineData {
 interface LineAttributes {
   drupal_internal__tid: number
   name: string
+  field_color: {
+    color: string
+    opacity: number | null
+  }
 }
