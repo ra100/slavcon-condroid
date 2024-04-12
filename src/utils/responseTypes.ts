@@ -220,6 +220,7 @@ interface RoomAttributes {
   drupal_internal__tid: number
   name: string
   description: FieldFullText
+  weight: number
 }
 
 interface LineData {

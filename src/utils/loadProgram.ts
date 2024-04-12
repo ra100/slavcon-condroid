@@ -20,6 +20,7 @@ export interface RawRoom {
   tid: number
   name: string
   description: string
+  weight: number
 }
 
 export interface RawLine {
@@ -79,7 +80,8 @@ export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
   return data.data.map(({ attributes }) => ({
     tid: attributes.drupal_internal__tid,
     name: attributes.name,
-    description: attributes.description?.processed || ''
+    description: attributes.description?.processed || '',
+    weight: attributes.weight
   }))
 }
 

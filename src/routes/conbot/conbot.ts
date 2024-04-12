@@ -1,3 +1,7 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
 import { feedbackForm, floorPlan, slavconData } from '../../slavconData'
 import {
   loadAuthors,
@@ -26,7 +30,11 @@ interface ConbotProgram {
   summary: string
   title: string
   type: string
+  weight: number
 }
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const mapProgramTypeToText = (programType: SlavconProgramType[]): ConbotProgram['type'] =>
   programType
@@ -44,6 +52,9 @@ const mapProgramTypeToText = (programType: SlavconProgramType[]): ConbotProgram[
     )
     .join(', ')
 
+const rewriteTimezone = (time: string): string =>
+  dayjs(time).tz('Europe/Bratislava').format('YYYY-MM-DDTHH:mm:ssZ').toString()
+
 const mapScheduleToConbotProgram =
   (authors: Map<RawGuest['uid'], RawGuest>, rooms: Map<RawRoom['tid'], RawRoom>, lines: Map<RawLine['tid'], RawLine>) =>
   (data: RawProgram): ConbotProgram => ({
@@ -55,13 +66,14 @@ const mapScheduleToConbotProgram =
       typeof rooms.get(data.location)?.name === 'undefined'
         ? 'UNDEFINED'
         : `${rooms.get(data.location)?.name} (${rooms.get(data.location)?.description})`,
-    startTime: data.startTime,
-    endTime: data.endTime,
+    startTime: rewriteTimezone(data.startTime),
+    endTime: rewriteTimezone(data.endTime),
     annotation: data.annotation,
     summary: data.summary,
     speaker: data.authors?.map((author: number) => authors.get(author)?.name).join(', '),
     highlight: data.highlight ?? false,
-    color: data.programLines.map((line) => lines.get(line)?.color).at(0) || 'transparent'
+    color: data.programLines.map((line) => lines.get(line)?.color).at(0) || 'transparent',
+    weight: rooms.get(data.location)?.weight ?? 9999
   })
 
 const programToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" color="${p.color}">
@@ -158,6 +170,7 @@ export const getConbotFormat = async (year: number) => {
   const mappedProgram = schedule
     .map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
     .filter(({ location }) => location !== 'UNDEFINED')
+    .sort((a, b) => a.weight - b.weight)
   const mappedProgramExtra = scheduleExtra.map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
 
   return convertToXML(mappedProgram, mappedProgramExtra, lastUpdate)
