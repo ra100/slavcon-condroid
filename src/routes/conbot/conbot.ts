@@ -65,7 +65,9 @@ const mapScheduleToConbotProgram =
     location:
       typeof rooms.get(data.location)?.name === 'undefined'
         ? 'UNDEFINED'
-        : `${rooms.get(data.location)?.name} (${rooms.get(data.location)?.description})`,
+        : `${rooms.get(data.location)?.name}${
+            rooms.get(data.location)?.description ? ` (${rooms.get(data.location)?.description})` : ''
+          }`,
     startTime: rewriteTimezone(data.startTime),
     endTime: rewriteTimezone(data.endTime),
     annotation: data.annotation,
@@ -81,8 +83,8 @@ const programToXML = (p: ConbotProgram): string => `    <programme highlight="${
       <speaker><![CDATA[ ${p.speaker} ]]></speaker>
       <title><![CDATA[ ${p.title} ]]></title>
       <type><![CDATA[ ${p.type} ]]></type>
-      <program-line><![CDATA[ ${p.location} ]]></program-line>
-      <location><![CDATA[ ${p.programLine} ]]></location>
+      <program-line><![CDATA[ ${p.programLine} ]]></program-line>
+      <location><![CDATA[ ${p.location} ]]></location>
       <start-time>${p.startTime}</start-time>
       <end-time>${p.endTime}</end-time>
       <annotation><![CDATA[ ${p.annotation} ]]></annotation>

@@ -1,4 +1,4 @@
-import { fetch } from 'undici'
+import { Agent, fetch } from 'undici'
 import {
   FieldData,
   GuestResponse,
@@ -54,8 +54,15 @@ export interface RawProgram {
   summary: string
 }
 
+const dispatcher = new Agent({
+  keepAliveTimeout: 20,
+  keepAliveMaxTimeout: 20
+})
+
 export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/views/users/guests_page?views-argument[0]=${year}`)
+  const response = await fetch(`${baseUrl}/sk/jsonapi/views/users/guests_page?views-argument[0]=${year}`, {
+    dispatcher
+  })
   const data = (await response.json()) as unknown as GuestResponse
 
   return data.data.map(({ attributes }) => ({
@@ -65,7 +72,7 @@ export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
 }
 
 export const loadYearTid = async (year: number): Promise<number> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/taxonomy_term/rocnik?filter[name]=${year}`)
+  const response = await fetch(`${baseUrl}/sk/jsonapi/taxonomy_term/rocnik?filter[name]=${year}`, { dispatcher })
   const data = (await response.json()) as unknown as YearResponse
 
   return data.data[0].attributes.drupal_internal__tid
@@ -73,7 +80,8 @@ export const loadYearTid = async (year: number): Promise<number> => {
 
 export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
   const response = await fetch(
-    `${baseUrl}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
+    `${baseUrl}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`,
+    { dispatcher }
   )
   const data = (await response.json()) as unknown as RoomResponse
 
@@ -87,7 +95,8 @@ export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
 
 export const loadLines = async (yearTid: number): Promise<RawLine[]> => {
   const response = await fetch(
-    `${baseUrl}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
+    `${baseUrl}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`,
+    { dispatcher }
   )
   console.error(response)
   const data = (await response.json()) as unknown as LineResponse
@@ -124,14 +133,18 @@ const mapToRawProgram = ({ attributes, relationships }: ScheduleNode): RawProgra
 })
 
 export const loadSchedule = async (year: number): Promise<RawProgram[]> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}`)
+  const response = await fetch(`${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}`, {
+    dispatcher
+  })
   const data = (await response.json()) as unknown as ScheduleResponse
 
   return data.data.map(mapToRawProgram).filter(({ startTime }) => Boolean(startTime))
 }
 
 export const loadScheduleExtra = async (year: number): Promise<RawProgram[]> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/views/program/extra_program?views-argument[0]=${year}`)
+  const response = await fetch(`${baseUrl}/sk/jsonapi/views/program/extra_program?views-argument[0]=${year}`, {
+    dispatcher
+  })
   const data = (await response.json()) as unknown as ScheduleResponse
 
   return data.data.map(mapToRawProgram)
