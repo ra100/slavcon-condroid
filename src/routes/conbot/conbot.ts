@@ -84,7 +84,9 @@ const programToXML = (p: ConbotProgram): string => `    <programme highlight="${
       <title><![CDATA[ ${p.title} ]]></title>
       <type><![CDATA[ ${p.type} ]]></type>
       <program-line><![CDATA[ ${p.programLine} ]]></program-line>
-      <location><![CDATA[ ${p.location} ]]></location>
+      <location${slavconData.parallelEventsRooms.includes(p.location) ? ' parallel-events="true"' : ''}><![CDATA[ ${
+  p.location
+} ]]></location>
       <start-time>${p.startTime}</start-time>
       <end-time>${p.endTime}</end-time>
       <annotation><![CDATA[ ${p.annotation} ]]></annotation>
