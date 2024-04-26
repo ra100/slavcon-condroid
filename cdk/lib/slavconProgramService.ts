@@ -30,7 +30,7 @@ export const getApiGateway = (scope: Construct, lambda: NodejsFunction): RestApi
   api.root.addProxy({ defaultIntegration: scheduleLambda })
 
   api.addUsagePlan('slavcon-program-usage-plan', {
-    quota: { limit: 240, period: Period.DAY },
+    quota: { limit: 24 * 60 * 60, period: Period.DAY },
     throttle: { rateLimit: 1, burstLimit: 5 }
   })
 

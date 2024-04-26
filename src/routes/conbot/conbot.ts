@@ -151,7 +151,6 @@ export const getConbotFormat = async (year: number) => {
     loadAuthors(year),
     loadYearTid(year)
   ])
-  console.debug(schedule, authors, yearTid)
   const [rooms, lines] = await Promise.all([loadRooms(yearTid), loadLines(yearTid)])
   const authorsMap = authors.reduce((acc, cur) => {
     acc.set(cur.uid, cur)

@@ -55,8 +55,7 @@ export interface RawProgram {
 }
 
 const dispatcher = new Agent({
-  keepAliveTimeout: 20,
-  keepAliveMaxTimeout: 20
+  connectTimeout: 55_000
 })
 
 export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
@@ -98,7 +97,6 @@ export const loadLines = async (yearTid: number): Promise<RawLine[]> => {
     `${baseUrl}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`,
     { dispatcher }
   )
-  console.error(response)
   const data = (await response.json()) as unknown as LineResponse
 
   return data.data.map(({ attributes }) => ({
