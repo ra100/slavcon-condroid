@@ -28,3 +28,11 @@ cd cdk
 npm run cdk:bootstrap
 npm run cdk:deploy
 ```
+
+### Test
+
+test locally
+
+```bash
+curl http://localhost:3000/conbot/2025
+```
