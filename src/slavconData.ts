@@ -1,9 +1,9 @@
 export const slavconData = {
-  title: 'SlavCon 2024',
+  title: 'SlavCon 2025',
   description:
-    'SlavCon 2024 je 17. ročník medzinárodného trojdňového festivalu fantasy, sci-fi, histórie, mytológie a popkultúry. Je určený pre všetkých fanúšikov literatúry, filmu, seriálov, hier, histórie, larpu a výtvarného umenia.',
+    'SlavCon 2025 je 18. ročník medzinárodného trojdňového festivalu fantasy, sci-fi, histórie, mytológie a popkultúry. Je určený pre všetkých fanúšikov literatúry, filmu, seriálov, hier, histórie, larpu a výtvarného umenia.',
   webUrl: 'https://slavcon.sk/',
-  fbUrl: 'https://www.facebook.com/events/347557691517814',
+  fbUrl: 'https://www.facebook.com/events/478961378453750',
   parallelEventsRooms: ['Výbeh (outdoor)']
 }
 
@@ -12,8 +12,8 @@ export const floorPlan = [
 ]
 
 export const feedbackForm = {
-  title: 'Feedback na SlavCon 2024',
-  description: 'Zadajte návratové odpovede na SlavCon 2024',
+  title: 'Feedback na SlavCon 2025',
+  description: 'Zadajte návratové odpovede na SlavCon 2025',
   image: '',
   link: 'https://slavcon.sk/feedback',
   enabled: true

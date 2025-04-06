@@ -11,7 +11,7 @@ export const getStatusLambda = (scope: Construct): NodejsFunction =>
   new NodejsFunction(scope, 'SlavconProgramHandler', {
     entry: path.resolve(__dirname, '../..', 'src/lambda.ts'),
     handler: 'handler',
-    runtime: Runtime.NODEJS_18_X,
+    runtime: Runtime.NODEJS_22_X,
     logRetention: RetentionDays.TWO_WEEKS,
     timeout: Duration.minutes(1),
     memorySize: 128

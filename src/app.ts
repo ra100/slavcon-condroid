@@ -13,7 +13,7 @@ export type AppOptions = {
 const options: AppOptions = {}
 
 const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
-  sensible(fastify, opts)
+  sensible(fastify)
   root(fastify, opts)
   condroid(fastify, opts)
   conbot(fastify, opts)
