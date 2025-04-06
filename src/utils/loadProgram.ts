@@ -1,4 +1,4 @@
-import { fetch } from 'undici'
+import { Agent, interceptors, request, setGlobalDispatcher } from 'undici'
 import {
   FieldData,
   GuestResponse,
@@ -10,6 +10,16 @@ import {
 } from './responseTypes'
 
 const baseUrl = 'https://slavcon.sk'
+
+const { cache, dns, retry } = interceptors
+
+const defaultDispatcher = new Agent({
+  connections: 100, // Limit concurrent kept-alive connections to not run out of resources
+  headersTimeout: 10_000, // 10 seconds; set as appropriate for the remote servers you plan to connect to
+  bodyTimeout: 10_000
+}).compose(cache(), dns(), retry())
+
+setGlobalDispatcher(defaultDispatcher)
 
 export interface RawGuest {
   uid: number
@@ -55,8 +65,13 @@ export interface RawProgram {
 }
 
 export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/views/users/guests_page?views-argument[0]=${year}`)
-  const data = (await response.json()) as unknown as GuestResponse
+  const { body, statusCode } = await request(`${baseUrl}/sk/jsonapi/views/users/guests_page?views-argument[0]=${year}`)
+
+  if (statusCode !== 200) {
+    throw new Error(`Failed to fetch authors: ${statusCode}`)
+  }
+
+  const data = (await body.json()) as unknown as GuestResponse
 
   return data.data.map(({ attributes }) => ({
     uid: attributes.drupal_internal__uid,
@@ -65,17 +80,27 @@ export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
 }
 
 export const loadYearTid = async (year: number): Promise<number> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/taxonomy_term/rocnik?filter[name]=${year}`)
-  const data = (await response.json()) as unknown as YearResponse
+  const { body, statusCode } = await request(`${baseUrl}/sk/jsonapi/taxonomy_term/rocnik?filter[name]=${year}`)
+
+  if (statusCode !== 200) {
+    throw new Error(`Failed to fetch year: ${statusCode}`)
+  }
+
+  const data = (await body.json()) as unknown as YearResponse
 
   return data.data[0].attributes.drupal_internal__tid
 }
 
 export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
-  const response = await fetch(
+  const { body, statusCode } = await request(
     `${baseUrl}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
   )
-  const data = (await response.json()) as unknown as RoomResponse
+
+  if (statusCode !== 200) {
+    throw new Error(`Failed to fetch rooms: ${statusCode}`)
+  }
+
+  const data = (await body.json()) as unknown as RoomResponse
 
   return data.data.map(({ attributes }) => ({
     tid: attributes.drupal_internal__tid,
@@ -86,10 +111,15 @@ export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
 }
 
 export const loadLines = async (yearTid: number): Promise<RawLine[]> => {
-  const response = await fetch(
+  const { body, statusCode } = await request(
     `${baseUrl}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
   )
-  const data = (await response.json()) as unknown as LineResponse
+
+  if (statusCode !== 200) {
+    throw new Error(`Failed to fetch lines: ${statusCode}`)
+  }
+
+  const data = (await body.json()) as unknown as LineResponse
 
   return data.data.map(({ attributes }) => ({
     tid: attributes.drupal_internal__tid,
@@ -123,15 +153,29 @@ const mapToRawProgram = ({ attributes, relationships }: ScheduleNode): RawProgra
 })
 
 export const loadSchedule = async (year: number): Promise<RawProgram[]> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}`)
-  const data = (await response.json()) as unknown as ScheduleResponse
+  const { body, statusCode } = await request(
+    `${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}`
+  )
+
+  if (statusCode !== 200) {
+    throw new Error(`Failed to fetch programs: ${statusCode}`)
+  }
+
+  const data = (await body.json()) as unknown as ScheduleResponse
 
   return data.data.map(mapToRawProgram).filter(({ startTime }) => Boolean(startTime))
 }
 
 export const loadScheduleExtra = async (year: number): Promise<RawProgram[]> => {
-  const response = await fetch(`${baseUrl}/sk/jsonapi/views/program/extra_program?views-argument[0]=${year}`)
-  const data = (await response.json()) as unknown as ScheduleResponse
+  const { body, statusCode } = await request(
+    `${baseUrl}/sk/jsonapi/views/program/extra_program?views-argument[0]=${year}`
+  )
+
+  if (statusCode !== 200) {
+    throw new Error(`Failed to fetch extra programs: ${statusCode}`)
+  }
+
+  const data = (await body.json()) as unknown as ScheduleResponse
 
   return data.data.map(mapToRawProgram)
 }
