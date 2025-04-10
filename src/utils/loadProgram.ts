@@ -14,9 +14,10 @@ const baseUrl = 'https://slavcon.sk'
 const { cache, dns, retry } = interceptors
 
 const defaultDispatcher = new Agent({
-  connections: 100, // Limit concurrent kept-alive connections to not run out of resources
-  headersTimeout: 10_000, // 10 seconds; set as appropriate for the remote servers you plan to connect to
-  bodyTimeout: 10_000
+  connections: 100,
+  connectTimeout: 20_000,
+  headersTimeout: 20_000,
+  bodyTimeout: 20_000
 }).compose(cache(), dns(), retry())
 
 setGlobalDispatcher(defaultDispatcher)

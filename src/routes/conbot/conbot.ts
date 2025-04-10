@@ -97,9 +97,7 @@ const extraProgramToXML = (p: ConbotProgram): string => `    <programme highligh
       <title><![CDATA[ ${p.title} ]]></title>
       ${p.speaker ? `<enterpreneur><![CDATA[ ${p.speaker} ]]></enterpreneur>` : ''}
       <annotation><![CDATA[ ${p.annotation} ]]></annotation>
-      <description><![CDATA[ ${p.summary}<br/>${p.location !== 'UNDEFINED' ? `<strong>${p.location}</strong>, ` : ''}${
-  p.type
-}, ${p.programLine}<br/> ]]></description>
+      <description><![CDATA[ ${p.programLine} ]]></description>
     </programme>`
 
 const feedbackXML = () => {
@@ -186,6 +184,7 @@ export const getConbotFormat = async (year: number) => {
     .map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
     .filter(({ location }) => location !== 'UNDEFINED')
     .sort((a, b) => a.weight - b.weight)
+
   const mappedProgramExtra = sortedScheduleExtra.map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
 
   return convertToXML(mappedProgram, mappedProgramExtra, lastUpdate)
