@@ -165,7 +165,19 @@ export const getConbotFormat = async (year: number) => {
     return acc
   }, new Map<RawLine['tid'], RawLine>())
 
-  const lastUpdate = [...schedule, ...scheduleExtra].reduce(
+  const sortedScheduleExtra = scheduleExtra
+    .map((program) => ({
+      ...program,
+      programLines: program.programLines.filter((line) => linesMap.get(line)?.extraProgram)
+    }))
+    .sort((a, b) => {
+      return (
+        (linesMap.get(a.programLines[0])?.weight || Number.MAX_VALUE) -
+        (linesMap.get(b.programLines[0])?.weight || Number.MAX_VALUE)
+      )
+    })
+
+  const lastUpdate = [...schedule, ...sortedScheduleExtra].reduce(
     (last, { changed }) => (changed.localeCompare(last) > 0 ? changed : last),
     schedule[0].changed
   )
@@ -174,7 +186,7 @@ export const getConbotFormat = async (year: number) => {
     .map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
     .filter(({ location }) => location !== 'UNDEFINED')
     .sort((a, b) => a.weight - b.weight)
-  const mappedProgramExtra = scheduleExtra.map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
+  const mappedProgramExtra = sortedScheduleExtra.map(mapScheduleToConbotProgram(authorsMap, roomsMap, linesMap))
 
   return convertToXML(mappedProgram, mappedProgramExtra, lastUpdate)
 }

@@ -231,10 +231,13 @@ interface LineData {
 }
 
 interface LineAttributes {
+  description: FieldFullText
   drupal_internal__tid: number
-  name: string
   field_color: {
     color: string
     opacity: number | null
   }
+  field_extra_program: boolean
+  name: string
+  weight: number
 }

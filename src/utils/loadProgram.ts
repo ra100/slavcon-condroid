@@ -37,6 +37,8 @@ export interface RawLine {
   tid: number
   name: string
   color: string
+  weight: number
+  extraProgram: boolean
 }
 
 export enum SlavconProgramType {
@@ -65,7 +67,9 @@ export interface RawProgram {
 }
 
 export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
-  const { body, statusCode } = await request(`${baseUrl}/sk/jsonapi/views/users/guests_page?views-argument[0]=${year}`)
+  const fields = 'drupal_internal__uid,field_displayname,field_meno'
+  const url = `${baseUrl}/sk/jsonapi/views/users/guests_page?views-argument[0]=${year}&fields[user--user]=${fields}`
+  const { body, statusCode } = await request(url)
 
   if (statusCode !== 200) {
     throw new Error(`Failed to fetch authors: ${statusCode}`)
@@ -80,7 +84,9 @@ export const loadAuthors = async (year: number): Promise<RawGuest[]> => {
 }
 
 export const loadYearTid = async (year: number): Promise<number> => {
-  const { body, statusCode } = await request(`${baseUrl}/sk/jsonapi/taxonomy_term/rocnik?filter[name]=${year}`)
+  const fields = 'drupal_internal__tid'
+  const url = `${baseUrl}/sk/jsonapi/taxonomy_term/rocnik?filter[name]=${year}&fields[taxonomy_term--rocnik]=${fields}`
+  const { body, statusCode } = await request(url)
 
   if (statusCode !== 200) {
     throw new Error(`Failed to fetch year: ${statusCode}`)
@@ -92,9 +98,9 @@ export const loadYearTid = async (year: number): Promise<number> => {
 }
 
 export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
-  const { body, statusCode } = await request(
-    `${baseUrl}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
-  )
+  const fields = 'drupal_internal__tid,name,description,weight'
+  const url = `${baseUrl}/sk/jsonapi/taxonomy_term/miestnosti?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}&fields[taxonomy_term--miestnosti]=${fields}`
+  const { body, statusCode } = await request(url)
 
   if (statusCode !== 200) {
     throw new Error(`Failed to fetch rooms: ${statusCode}`)
@@ -111,9 +117,9 @@ export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
 }
 
 export const loadLines = async (yearTid: number): Promise<RawLine[]> => {
-  const { body, statusCode } = await request(
-    `${baseUrl}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}`
-  )
+  const fields = 'drupal_internal__tid,name,field_color,weight,field_extra_program'
+  const url = `${baseUrl}/sk/jsonapi/taxonomy_term/anotacie?filter[field_rocnik.meta.drupal_internal__target_id]=${yearTid}&fields[taxonomy_term--anotacie]=${fields}`
+  const { body, statusCode } = await request(url)
 
   if (statusCode !== 200) {
     throw new Error(`Failed to fetch lines: ${statusCode}`)
@@ -124,7 +130,9 @@ export const loadLines = async (yearTid: number): Promise<RawLine[]> => {
   return data.data.map(({ attributes }) => ({
     tid: attributes.drupal_internal__tid,
     name: attributes.name,
-    color: attributes.field_color?.color
+    color: attributes.field_color?.color,
+    weight: attributes.weight,
+    extraProgram: attributes.field_extra_program
   }))
 }
 
@@ -152,10 +160,12 @@ const mapToRawProgram = ({ attributes, relationships }: ScheduleNode): RawProgra
         attributes.body.processed
 })
 
+const scheduleFields =
+  'drupal_internal__nid,title,field_start,field_dlzka,body,field_highlight,changed,metatag,field_guest,field_type,field_category,field_miestnost'
+
 export const loadSchedule = async (year: number): Promise<RawProgram[]> => {
-  const { body, statusCode } = await request(
-    `${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}`
-  )
+  const url = `${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}&fields[node--program]=${scheduleFields}`
+  const { body, statusCode } = await request(url)
 
   if (statusCode !== 200) {
     throw new Error(`Failed to fetch programs: ${statusCode}`)
@@ -167,9 +177,8 @@ export const loadSchedule = async (year: number): Promise<RawProgram[]> => {
 }
 
 export const loadScheduleExtra = async (year: number): Promise<RawProgram[]> => {
-  const { body, statusCode } = await request(
-    `${baseUrl}/sk/jsonapi/views/program/extra_program?views-argument[0]=${year}`
-  )
+  const url = `${baseUrl}/sk/jsonapi/views/program/extra_program?views-argument[0]=${year}&fields[node--program]=${scheduleFields}`
+  const { body, statusCode } = await request(url)
 
   if (statusCode !== 200) {
     throw new Error(`Failed to fetch extra programs: ${statusCode}`)
