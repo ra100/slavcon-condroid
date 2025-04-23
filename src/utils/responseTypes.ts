@@ -42,6 +42,7 @@ export interface ScheduleAttributes {
   body: Body
   field_dlzka: number
   field_highlight: boolean
+  field_kids_friendly: boolean
   field_metatag: FieldMetatag | null
   field_note: null | string
   field_obsah: null | string

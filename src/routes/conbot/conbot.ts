@@ -22,6 +22,7 @@ interface ConbotProgram {
   color: string
   endTime: string
   highlight: boolean
+  kidsFriendly: boolean
   location: string
   pid: number
   programLine: string
@@ -75,10 +76,13 @@ const mapScheduleToConbotProgram =
     speaker: data.authors?.map((author: number) => authors.get(author)?.name).join(', '),
     highlight: data.highlight ?? false,
     color: data.programLines.map((line) => lines.get(line)?.color).at(0) || 'transparent',
-    weight: rooms.get(data.location)?.weight ?? 9999
+    weight: rooms.get(data.location)?.weight ?? 9999,
+    kidsFriendly: data.kidsFriendly ?? false
   })
 
-const programToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" color="${p.color}">
+const programToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" ${
+  p.kidsFriendly ? 'kids-friendly="true" ' : ''
+}color="${p.color}">
       <pid><![CDATA[ ${p.pid} ]]></pid>
       <speaker><![CDATA[ ${p.speaker} ]]></speaker>
       <title><![CDATA[ ${p.title} ]]></title>
@@ -92,7 +96,9 @@ const programToXML = (p: ConbotProgram): string => `    <programme highlight="${
       <annotation><![CDATA[ ${p.annotation} ]]></annotation>
     </programme>`
 
-const extraProgramToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" color="${p.color}">
+const extraProgramToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" ${
+  p.kidsFriendly ? 'kids-friendly="true" ' : ''
+}color="${p.color}">
       <id><![CDATA[ ${p.pid} ]]></id>
       <title><![CDATA[ ${p.title} ]]></title>
       ${p.speaker ? `<enterpreneur><![CDATA[ ${p.speaker} ]]></enterpreneur>` : ''}

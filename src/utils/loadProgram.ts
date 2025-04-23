@@ -63,6 +63,7 @@ export interface RawProgram {
   endTime: string
   annotation: string
   highlight: boolean
+  kidsFriendly: boolean
   changed: string
   summary: string
 }
@@ -126,6 +127,7 @@ const mapToRawProgram = ({ attributes, relationships }: ScheduleNode): RawProgra
   programLines: relationships.field_category.data?.map(getInternalIds),
   location: relationships.field_miestnost.data?.meta.drupal_internal__target_id,
   highlight: attributes.field_highlight,
+  kidsFriendly: attributes.field_kids_friendly,
   changed: new Date(attributes.changed).toISOString(),
   summary:
     attributes.body.summary !== ''
@@ -189,7 +191,7 @@ export const loadRooms = async (yearTid: number): Promise<RawRoom[]> => {
 }
 
 const scheduleFields =
-  'drupal_internal__nid,title,field_start,field_dlzka,body,field_highlight,changed,metatag,field_guest,field_type,field_category,field_miestnost'
+  'drupal_internal__nid,title,field_start,field_dlzka,body,field_highlight,changed,metatag,field_guest,field_type,field_category,field_miestnost,field_kids_friendly'
 
 export const loadSchedule = async (year: number): Promise<RawProgram[]> => {
   const url = `${baseUrl}/sk/jsonapi/views/program/program_page?views-argument[0]=${year}&fields[node--program]=${scheduleFields}`
