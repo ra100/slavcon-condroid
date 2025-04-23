@@ -80,7 +80,7 @@ const mapScheduleToConbotProgram =
     kidsFriendly: data.kidsFriendly ?? false
   })
 
-const programToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" ${
+const programToXML = (p: ConbotProgram): string => `    <programme ${p.highlight ? 'highlight="true" ' : ''}${
   p.kidsFriendly ? 'kids-friendly="true" ' : ''
 }color="${p.color}">
       <pid><![CDATA[ ${p.pid} ]]></pid>
@@ -96,7 +96,7 @@ const programToXML = (p: ConbotProgram): string => `    <programme highlight="${
       <annotation><![CDATA[ ${p.annotation} ]]></annotation>
     </programme>`
 
-const extraProgramToXML = (p: ConbotProgram): string => `    <programme highlight="${p.highlight}" ${
+const extraProgramToXML = (p: ConbotProgram): string => `    <programme ${p.highlight ? 'highlight="true" ' : ''} ${
   p.kidsFriendly ? 'kids-friendly="true" ' : ''
 }color="${p.color}">
       <id><![CDATA[ ${p.pid} ]]></id>
