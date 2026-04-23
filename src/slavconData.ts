@@ -8,7 +8,11 @@ export const slavconData = {
 }
 
 export const floorPlan = [
-  { title: 'budova', description: '', image: 'https://slavcon.sk/sites/default/files/2025-04/mapka-2025.jpg' }
+  {
+    title: 'budova',
+    description: '',
+    image: 'https://slavcon.sk/sites/default/files/uploads/2026/SC26_floorplan_v3.svg'
+  }
 ]
 
 export const feedbackForm = {
