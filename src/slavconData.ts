@@ -9,9 +9,19 @@ export const slavconData = {
 
 export const floorPlan = [
   {
-    title: 'budova',
+    title: 'Prízemie',
     description: '',
-    image: 'https://slavcon.sk/sites/default/files/uploads/2026/SC26_floorplan_v3.svg'
+    image: 'https://slavcon.sk/sites/default/files/uploads/2026/prizemie.png'
+  },
+  {
+    title: 'Poschodie',
+    description: '',
+    image: 'https://slavcon.sk/sites/default/files/uploads/2026/poschodie.png'
+  },
+  {
+    title: 'Foayer',
+    description: '',
+    image: 'https://slavcon.sk/sites/default/files/uploads/2026/foayer.png'
   }
 ]
 
