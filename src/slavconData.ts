@@ -19,7 +19,7 @@ export const floorPlan = [
     image: 'https://slavcon.sk/sites/default/files/uploads/2026/poschodie.png'
   },
   {
-    title: 'Foayer',
+    title: 'Foyer',
     description: '',
     image: 'https://slavcon.sk/sites/default/files/uploads/2026/foayer.png'
   }
